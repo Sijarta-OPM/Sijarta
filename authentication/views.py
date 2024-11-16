@@ -12,7 +12,7 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')
+                return redirect('homepage')
             else:
                 return render(request, 'login.html', {'form': form, 'error': 'Invalid credentials'})
     else:
