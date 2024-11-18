@@ -8,7 +8,7 @@ def subkategori_detail(request, subkategori_id):
     # Ambil data subkategori
     subkategori = get_object_or_404(Subkategori, pk=subkategori_id)
     sesi_list = SesiLayanan.objects.filter(subkategori=subkategori)
-    pekerja_list = Pekerja.objects.all()  # Dummy data pekerja
+    pekerja_list = Pekerja.objects.all()  # Ambil pekerja yang tersedia untuk subkategori ini
 
     # Tentukan role (pengguna atau pekerja)
     is_pekerja = request.user.groups.filter(name='Pekerja').exists() if request.user.is_authenticated else False
@@ -29,22 +29,24 @@ def buat_pemesanan(request, sesi_id):
         if form.is_valid():
             pemesanan = form.save(commit=False)
             pemesanan.sesi = sesi
+            pemesanan.total_pembayaran = sesi.harga  # Set total pembayaran sesuai harga sesi
             pemesanan.save()
-            return HttpResponseRedirect('/jasa/pemesanan/')  # Redirect ke list pemesanan
+            return HttpResponseRedirect('/jasa/pemesanan/')  # Redirect ke halaman daftar pemesanan
     else:
         form = PemesananForm()
 
-    return render(request, 'buat_pemesanan.html', {'form': form, 'sesi': sesi})
+    return render(request, 'buat_pemesanan.html', {
+        'form': form,
+        'sesi': sesi,
+        'total_pembayaran': sesi.harga,  # Kirim harga untuk ditampilkan di template
+    })
 
 # List Pemesanan
+@login_required
 def list_pemesanan(request):
-    # Ambil data subkategori untuk filter
-    subkategori_list = Subkategori.objects.all()
-
-    # Ambil semua pemesanan (bisa ditambah filter jika diperlukan)
-    pemesanan_list = Pemesanan.objects.select_related('sesi', 'sesi__subkategori', 'pekerja')
+    # Get orders for the logged-in user only
+    pemesanan_list = Pemesanan.objects.filter(user=request.user).select_related('sesi', 'sesi__subkategori', 'pekerja')
 
     return render(request, 'list_pemesanan.html', {
-        'subkategori_list': subkategori_list,
         'pemesanan_list': pemesanan_list,
     })
