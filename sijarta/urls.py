@@ -8,4 +8,6 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),  # Path lain untuk autentikasi
     path('', include('homepage.urls')),  # Homepage diatur sebagai root URL
     path('jasa/', include('jasa.urls')),  # URL untuk app jasa
+    path('voucher/', include('pembelian_voucher.urls')),
+    path('testimoni/', include('testimoni.urls'))
 ]
