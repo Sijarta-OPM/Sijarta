@@ -1,0 +1,57 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Logo atau Nama Aplikasi -->
+        <a class="navbar-brand" href="{% url 'homepage' %}">Sijarta</a>
+        
+        <!-- Tombol toggle untuk tampilan mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Daftar menu -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">  <!-- 'ms-auto' untuk align ke kanan -->
+                <!-- Cek apakah user sedang di halaman homepage atau tidak -->
+                {% if request.path != '/' %}
+                    <!-- Navbar untuk Guest (Belum Login) -->
+                    {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'authentication:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'authentication:register' %}">Register</a>
+                        </li>
+                    {% else %}
+                        <!-- Navbar untuk Pengguna -->
+                        {% if user.userdata.role == 'PENGGUNA' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'homepage' %}">Homepage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'authentication:logout' %}">Logout</a>
+                            </li>
+                        <!-- Navbar untuk Pekerja -->
+                        {% elif user.userdata.role == 'PEKERJA' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'homepage' %}">Homepage</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'authentication:logout' %}">Logout</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <!-- Jika user ada di homepage, tampilkan login dan register saja -->
+                    {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'authentication:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'authentication:register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

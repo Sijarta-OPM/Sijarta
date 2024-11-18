@@ -4,7 +4,9 @@ from authentication.views import login_view  # Impor login_view dari authenticat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('authentication.urls')),
-    path('', login_view, name='home'),  # Menambahkan URL root yang mengarah ke login_view
+    path('auth/login/', login_view, name='login'),  # Path login yang unik
+    path('auth/', include('authentication.urls')),  # Path lain untuk autentikasi
+    path('', include('homepage.urls')),  # Homepage diatur sebagai root URL
+    path('jasa/', include('jasa.urls')),  # URL untuk app jasa
     path('mypay/', include('mypay.urls')),  # Menambahkan URL untuk mypay
 ]

@@ -1,30 +1,57 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
-from .forms import LoginForm
-
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                return render(request, 'login.html', {'form': form, 'error': 'Invalid credentials'})
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+from django.contrib import messages
+from .models import UserData
+from django.contrib.auth import logout
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('authentication:login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+        # Ambil data dari form
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        nama = request.POST.get('nama')
+        no_hp = request.POST.get('no_hp')
+        alamat = request.POST.get('alamat')
+        tanggal_lahir = request.POST.get('tanggal_lahir')
+        role = request.POST.get('role')
+
+        # Buat user baru
+        user = User.objects.create_user(
+            username=username,  # Gunakan username sebagai unique identifier
+            password=password,
+            first_name=nama
+        )
+
+        # Buat UserData terkait user
+        UserData.objects.create(
+            user=user,
+            no_hp=no_hp,
+            alamat=alamat,
+            tanggal_lahir=tanggal_lahir,
+            role=role
+        )
+
+        messages.success(request, "Akun berhasil dibuat!")
+        return redirect('authentication:login')
+
+    return render(request, 'register.html')
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Verifikasi kredensial pengguna
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('homepage')  # Redirect ke halaman utama
+        else:
+            messages.error(request, "Username atau password salah!")
+
+    return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)  # Menghapus sesi pengguna
+    return redirect('authentication:login')
