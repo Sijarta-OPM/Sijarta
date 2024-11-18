@@ -1,0 +1,97 @@
+<main class="bg-gray-100 font-sans">
+    <header class="text-center py-6 bg-blue-600 text-white">
+        <h1 class="text-3xl font-bold">Discount Information</h1>
+    </header>
+
+    <div class="container mx-auto p-4">
+        <section>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Vouchers</h2>
+            <div id="vouchers" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Vouchers will be rendered here -->
+            </div>
+        </section>
+
+        <section class="mt-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Promos</h2>
+            <div id="promos" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Promos will be rendered here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Example data
+        const vouchers = [
+            {
+                code: "VOUCHER2024",
+                percent: 23000,
+                minTransaction: 100,
+                expiresIn: 7,
+                maxUses: 5,
+                price: 50
+            },
+            {
+                code: "SAVE50",
+                percent: 50,
+                minTransaction: 200,
+                expiresIn: 3,
+                maxUses: 2,
+                price: 100000
+            }
+        ];
+
+        const promos = [
+            {
+                code: "PROMO2024",
+                expiryDate: "2024-12-31"
+            },
+            {
+                code: "FREESHIP",
+                expiryDate: "2024-11-30"
+            },
+            {
+                code: "SDAANJING",
+                expiryDate: "2024-12-20"
+            }
+        ];
+
+        // Function to render vouchers
+        const renderVouchers = () => {
+            const voucherContainer = document.getElementById('vouchers');
+            vouchers.forEach(voucher => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-lg';
+                card.innerHTML = `
+                    <h3 class="text-lg font-semibold text-gray-700">Kode: ${voucher.code}</h3>
+                    <p class="text-gray-600">Potongan: <span class="font-bold">${voucher.percent}%</span></p>
+                    <p class="text-gray-600">Minimal Transaksi: Rp. ${voucher.minTransaction}</p>
+                    <p class="text-gray-600">Masa Berlaku: ${voucher.expiresIn} days</p>
+                    <p class="text-gray-600">Maksimal Penggunaan: ${voucher.maxUses}</p>
+                    <p class="text-gray-600">Harga: <span class="text-blue-600 font-semibold">Rp. ${voucher.price}</span></p>
+                    <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Beli Sekarang
+                    </button>
+                `;
+                voucherContainer.appendChild(card);
+            });
+        };
+
+        // Function to render promos
+        const renderPromos = () => {
+            const promoContainer = document.getElementById('promos');
+            promos.forEach(promo => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-lg shadow-md hover:shadow-lg';
+                card.innerHTML = `
+                    <h3 class="text-lg font-semibold text-gray-700">Kode: ${promo.code}</h3>
+                    <p class="text-gray-600">Tanggal Berakhir: ${promo.expiryDate}</p>
+                `;
+                promoContainer.appendChild(card);
+            });
+        };
+
+        // Call render functions
+        renderVouchers();
+        renderPromos();
+    </script>
+</main>
