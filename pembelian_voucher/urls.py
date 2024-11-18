@@ -1,8 +1,8 @@
 from django.urls import path
-from pembelian_voucher.views import *;
+from .views import beli_voucher
 
 app_name = 'review'
 
-urlpattern = [
-    
+urlpatterns = [
+    path('beli_voucher/', beli_voucher, name='beli_voucher'),
 ]
