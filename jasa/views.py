@@ -13,7 +13,7 @@ def subkategori_detail(request, subkategori_id):
     # Tentukan role (pengguna atau pekerja)
     is_pekerja = request.user.groups.filter(name='Pekerja').exists() if request.user.is_authenticated else False
 
-    return render(request, 'jasa/subkategori_detail.html', {
+    return render(request, 'subkategori_detail.html', {
         'subkategori': subkategori,
         'sesi_list': sesi_list,
         'pekerja_list': pekerja_list,
@@ -44,7 +44,7 @@ def list_pemesanan(request):
     # Ambil semua pemesanan (bisa ditambah filter jika diperlukan)
     pemesanan_list = Pemesanan.objects.select_related('sesi', 'sesi__subkategori', 'pekerja')
 
-    return render(request, 'jasa/list_pemesanan.html', {
+    return render(request, 'list_pemesanan.html', {
         'subkategori_list': subkategori_list,
         'pemesanan_list': pemesanan_list,
     })
