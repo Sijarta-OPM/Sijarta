@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+<html>
+<head>
+    <title>Transaksi MyPay</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .user-info div {
+            margin-bottom: 10px;
+        }
+        .submit-button {
+            display: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .back-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            margin-right: 10px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+    <script>
+        function updateForm() {
+            var category = document.getElementById('category').value;
+            var formContent = document.getElementById('form-content');
+            var submitButton = document.getElementById('submit-button');
+            formContent.innerHTML = '';
+
+            if (category === 'topup') {
+                formContent.innerHTML = `
+                    <div class="form-group">
+                        <label for="amount">Nominal Top Up</label>
+                        <input type="number" id="amount" name="amount">
+                    </div>
+                `;
+                submitButton.innerText = 'TopUp';
+                submitButton.style.display = 'block';
+            } else if (category === 'pay_service') {
+                formContent.innerHTML = `
+                    <div class="form-group">
+                        <label for="service">Jasa yang Dipesan</label>
+                        <select id="service" name="service">
+                            <option value="service1">Jasa 1</option>
+                            <option value="service2">Jasa 2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Nominal Pembayaran</label>
+                        <input type="number" id="amount" name="amount" value="50000" readonly>
+                    </div>
+                `;
+                submitButton.innerText = 'Bayar';
+                submitButton.style.display = 'block';
+            } else if (category === 'transfer') {
+                formContent.innerHTML = `
+                    <div class="form-group">
+                        <label for="phone">NoHP Tujuan</label>
+                        <input type="text" id="phone" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Nominal Transfer</label>
+                        <input type="number" id="amount" name="amount">
+                    </div>
+                `;
+                submitButton.innerText = 'Bayar';
+                submitButton.style.display = 'block';
+            } else if (category === 'withdrawal') {
+                formContent.innerHTML = `
+                    <div class="form-group">
+                        <label for="bank">Nama Bank</label>
+                        <select id="bank" name="bank">
+                            <option value="bank1">Bank 1</option>
+                            <option value="bank2">Bank 2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="account_number">Nomor Rekening</label>
+                        <input type="text" id="account_number" name="account_number">
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Nominal Withdrawal</label>
+                        <input type="number" id="amount" name="amount">
+                    </div>
+                `;
+                submitButton.innerText = 'Bayar';
+                submitButton.style.display = 'block';
+            } else {
+                submitButton.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Transaksi MyPay</h1>
+        <div class="user-info">
+            <div>{{ user.transaction_date }}</div>
+            <div>{{ user.name }}</div>
+            <div>Rp {{ user.balance }}</div>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="category">Kategori Transaksi</label>
+                <select id="category" name="category" onchange="updateForm()">
+                    <option value="">Pilih Transaksi</option>
+                    <option value="topup">TopUp MyPay</option>
+                    <option value="pay_service">Bayar Jasa</option>
+                    <option value="transfer">Transfer MyPay</option>
+                    <option value="withdrawal">Withdrawal</option>
+                </select>
+            </div>
+            <div id="form-content"></div>
+            <div class="button-container">
+                <button type="button" class="back-button" onclick="location.href='{% url "mypay_dashboard" %}'">Back</button>
+                <!-- idk why this does this ;-; -->
+                <button type="submit" id="submit-button" class="submit-button">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
