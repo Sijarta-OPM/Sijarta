@@ -7,11 +7,37 @@
 </head>
 <body>
     <h2>Daftar Akun Baru</h2>
+    
+    <!-- Form registrasi -->
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        <label for="username">Username:</label>
+        <input type="text" name="username" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br>
+
+        <label for="nama">Nama:</label>
+        <input type="text" name="nama" required><br>
+
+        <label for="no_hp">No HP:</label>
+        <input type="text" name="no_hp" required><br>
+
+        <label for="alamat">Alamat:</label>
+        <textarea name="alamat" required></textarea><br>
+
+        <label for="tanggal_lahir">Tanggal Lahir:</label>
+        <input type="date" name="tanggal_lahir" required><br>
+
+        <label for="role">Role:</label>
+        <select name="role" required>
+            <option value="PENGGUNA">Pengguna</option>
+            <option value="PEKERJA">Pekerja</option>
+        </select><br>
+
         <button type="submit">Daftar</button>
     </form>
+
     <p>Sudah punya akun? <a href="{% url 'authentication:login' %}">Login di sini</a></p>
 </body>
 </html>
