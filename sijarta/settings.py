@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'mypay',
     'homepage',
     'jasa',
+    'testimoni',
+    'pembelian_voucher',
 ]
 
 MIDDLEWARE = [
