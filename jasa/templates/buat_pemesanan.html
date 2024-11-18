@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pemesanan Jasa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .readonly {
+            background-color: #f9f9f9;
+            color: #333;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pesan Jasa</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="tanggal_pemesanan">Tanggal Pemesanan:</label>
+            <input type="date" id="tanggal_pemesanan" name="tanggal_pemesanan" required>
+
+            <label for="kode_diskon">Diskon:</label>
+            <input type="text" id="kode_diskon" name="kode_diskon" placeholder="Kode Diskon">
+
+            <label for="total_pembayaran">Total Pembayaran:</label>
+            <input type="text" id="total_pembayaran" name="total_pembayaran" class="readonly" value="Rp {{ total_pembayaran }}" readonly>
+
+            <label for="metode_pembayaran">Metode Pembayaran:</label>
+            <select id="metode_pembayaran" name="metode_pembayaran" required>
+                <option value="transfer">Transfer Bank</option>
+                <option value="ovo">OVO</option>
+                <option value="gopay">GoPay</option>
+                <option value="dana">Dana</option>
+            </select>
+
+            <button type="submit">Pesan Jasa</button>
+        </form>
+    </div>
+</body>
+</html>
