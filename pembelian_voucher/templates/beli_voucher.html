@@ -1,59 +1,7 @@
- <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f9f9f9;
-    }
-
-    h1, h2 {
-        text-align: center;
-        color: #333;
-    }
-
-    .container {
-        width: 90%;
-        margin: auto;
-        padding: 20px;
-    }
-
-    .voucher-card, .promo-card {
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .voucher-card h3, .promo-card h3 {
-        margin: 0;
-        color: #555;
-    }
-
-    .voucher-card p, .promo-card p {
-        margin: 5px 0;
-        color: #666;
-    }
-
-    .voucher-card button {
-        align-self: flex-start;
-        padding: 10px 20px;
-        background: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .voucher-card button:hover {
-        background: #0056b3;
-    }
-</style>
-<main class="bg-gray-100 font-sans">
-    <header class="text-center py-6 bg-blue-600 text-white">
+{% extends 'base.html' %}
+{% block content %}
+<main class=" font-sans">
+    <header class="text-center py-6 border-gray-400 text-white">
         <h1 class="text-3xl font-bold">Discount Information</h1>
     </header>
 
@@ -73,16 +21,27 @@
         </section>
     </div>
 
+    <div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-lg w-96 p-6">
+            <h2 id="modal-title" class="text-2xl font-bold mb-4"></h2>
+            <div id="modal-body" class="text-gray-700 mb-6"></div>
+            <button id="close-modal" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                Close
+            </button>
+        </div>
+    </div>
+
     <script>
         // Example data
+        
         const vouchers = [
             {
                 code: "VOUCHER2024",
-                percent: 23000,
-                minTransaction: 100,
+                percent: 75,
+                minTransaction: 140000,
                 expiresIn: 7,
                 maxUses: 5,
-                price: 50
+                price: 5000
             },
             {
                 code: "SAVE50",
@@ -90,7 +49,7 @@
                 minTransaction: 200,
                 expiresIn: 3,
                 maxUses: 2,
-                price: 100000
+                price: 10000
             }
         ];
 
@@ -122,7 +81,7 @@
                     <p class="text-gray-600">Masa Berlaku: ${voucher.expiresIn} days</p>
                     <p class="text-gray-600">Maksimal Penggunaan: ${voucher.maxUses}</p>
                     <p class="text-gray-600">Harga: <span class="text-blue-600 font-semibold">Rp. ${voucher.price}</span></p>
-                    <button class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    <button id="buy-voucher-btn"class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                         Beli Sekarang
                     </button>
                 `;
@@ -147,5 +106,106 @@
         // Call render functions
         renderVouchers();
         renderPromos();
+
+        const buyButton = document.getElementById('buy-voucher-btn');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const closeModal = document.getElementById('close-modal');
+
+        buyButton.addEventListener('click', () => {
+            // Simulate a response (success or failure)
+            const isSuccess = Math.random() > 0.5; // 50% chance of success
+
+            if (isSuccess) {
+                // Success response
+                const voucherCode = 'ABC123XYZ';
+                const validity = '2024-12-31';
+                const usageCount = 5;
+
+                modalTitle.textContent = 'Purchase Successful!';
+                modalBody.innerHTML = `
+                    <p><strong>Voucher Code:</strong> ${voucherCode}</p>
+                    <p><strong>Validity:</strong> ${validity}</p>
+                    <p><strong>Usage Count:</strong> ${usageCount}</p>
+                `;
+            } else {
+                // Failure response
+                modalTitle.textContent = 'Purchase Failed';
+                modalBody.innerHTML = `
+                    <p class="text-red-500">You do not have enough balance to buy this voucher.</p>
+                `;
+            }
+
+            // Show the modal
+            modal.classList.remove('hidden');
+        });
+
+        // Close modal logic
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside the modal content
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
     </script>
+     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+    
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+    
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+        }
+    
+        .voucher-card, .promo-card {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    
+        .voucher-card h3, .promo-card h3 {
+            margin: 0;
+            color: #555;
+        }
+    
+        .voucher-card p, .promo-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+    
+        .voucher-card button {
+            align-self: flex-start;
+            padding: 10px 20px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    
+        .voucher-card button:hover {
+            background: #0056b3;
+        }
+    </style>
 </main>
+{% endblock content %}
