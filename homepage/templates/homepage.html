@@ -11,11 +11,33 @@
         }
 
         .filter {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
         }
 
-        .filter label, .filter select, .filter button {
+        .filter label {
             margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .filter select, .filter input[type="search"], .filter button {
+            margin-right: 10px;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .filter button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .filter button:hover {
+            background-color: #0056b3;
         }
 
         .category {
@@ -26,7 +48,6 @@
             background-color: #f0f0f0;
             padding: 10px;
             border: 1px solid #ddd;
-            cursor: pointer;
         }
 
         .subcategories {
@@ -46,6 +67,21 @@
         .subcategories a:hover {
             text-decoration: underline;
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -54,23 +90,28 @@
     <!-- Filter -->
     <div class="filter">
         <form method="GET" action="">
-            <label for="kategori">Kategori & Subkategori:</label>
+            <!-- Dropdown Kategori -->
+            <label for="kategori">Kategori:</label>
             <select name="kategori" id="kategori">
                 <option value="">Semua Kategori</option>
                 {% for kategori in kategori_list %}
-                <optgroup label="{{ kategori.nama }}">
-                    {% for subkategori in kategori.subkategori_set.all %}
-                    <option value="{{ subkategori.id }}" {% if request.GET.kategori == subkategori.id|stringformat:"s" %}selected{% endif %}>
-                        {{ subkategori.nama }}
-                    </option>
-                    {% endfor %}
-                </optgroup>
+                <option value="{{ kategori.id }}" {% if request.GET.kategori == kategori.id|stringformat:"s" %}selected{% endif %}>
+                    {{ kategori.nama }}
+                </option>
                 {% endfor %}
             </select>
 
-            <button type="submit">Filter</button>
+            <!-- Search Bar -->
+            <label for="search">Nama Subkategori:</label>
+            <input type="search" id="search" name="search" placeholder="Cari Subkategori..." value="{{ request.GET.search|default_if_none:'' }}">
+
+            <!-- Tombol Filter -->
+            <button type="submit">Search</button>
         </form>
     </div>
+
+    <!-- Tombol untuk melihat Daftar Pemesanan -->
+    <a href="{% url 'list_pemesanan' %}" class="button">Lihat Daftar Pemesanan</a>
 
     <!-- Daftar Kategori dan Subkategori -->
     {% for kategori in kategori_list %}

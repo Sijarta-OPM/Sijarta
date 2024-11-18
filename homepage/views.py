@@ -3,15 +3,17 @@ from jasa.models import Kategori, Subkategori
 
 def homepage(request):
     # Ambil semua kategori
-    kategori_list = Kategori.objects.prefetch_related('subkategori_set').all()
+    kategori_list = Kategori.objects.all()
 
-    # Ambil filter dari GET parameter
-    selected_subkategori_id = request.GET.get('kategori', '')
+    # Filter berdasarkan GET parameter
+    kategori_id = request.GET.get('kategori', '')
+    search_query = request.GET.get('search', '')
 
-    # Jika subkategori dipilih, filter kategori sesuai subkategori
-    if selected_subkategori_id:
-        subkategori = Subkategori.objects.filter(id=selected_subkategori_id).first()
-        kategori_list = kategori_list.filter(id=subkategori.kategori.id) if subkategori else []
+    if kategori_id:
+        kategori_list = kategori_list.filter(id=kategori_id)
+
+    if search_query:
+        kategori_list = kategori_list.filter(subkategori__nama__icontains=search_query).distinct()
 
     return render(request, 'homepage.html', {
         'kategori_list': kategori_list,

@@ -115,7 +115,7 @@
                         <td>{{ sesi.nama }}</td>
                         <td>Rp {{ sesi.harga }}</td>
                         {% if not is_pekerja %}
-                        <td><a href="#" class="button">Pesan</a></td>
+                        <td><a href="{% url 'buat_pemesanan' sesi.id %}" class="button">Pesan</a></td>
                         {% endif %}
                     </tr>
                     {% endfor %}

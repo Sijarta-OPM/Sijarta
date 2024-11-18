@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+<html>
+<head>
+    <title>Pesanan Jasa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .service-order {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .service-order h3 {
+            margin: 0;
+        }
+        .service-order p {
+            margin: 5px 0;
+        }
+        .service-order button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('category');
+            const subcategorySelect = document.getElementById('subcategory');
+
+            const subcategories = {
+                'Home Cleaning': ['Regular Cleaning', 'Deep Cleaning'],
+                'Gardening': ['Lawn Mowing', 'Tree Trimming']
+            };
+
+            categorySelect.addEventListener('change', function() {
+                const selectedCategory = categorySelect.value;
+                subcategorySelect.innerHTML = '<option value="">Pilih Subkategori</option>';
+                if (selectedCategory && subcategories[selectedCategory]) {
+                    subcategories[selectedCategory].forEach(function(subcategory) {
+                        const option = document.createElement('option');
+                        option.value = subcategory;
+                        option.textContent = subcategory;
+                        subcategorySelect.appendChild(option);
+                    });
+                }
+            });
+
+            // Set the selected category and subcategory if they exist
+            const selectedCategory = '{{ request.GET.category|default_if_none:"" }}';
+            const selectedSubcategory = '{{ request.GET.subcategory|default_if_none:"" }}';
+            if (selectedCategory) {
+                categorySelect.value = selectedCategory;
+                categorySelect.dispatchEvent(new Event('change'));
+                if (selectedSubcategory) {
+                    subcategorySelect.value = selectedSubcategory;
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Pesanan Jasa</h1>
+        
+        <form method="get">
+            <div class="form-group">
+                <label for="category">Filter by Category:</label>
+                <select name="category" id="category">
+                    <option value="">All</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="subcategory">Filter by Subcategory:</label>
+                <select name="subcategory" id="subcategory">
+                    <option value="">Pilih Subkategori</option>
+                </select>
+            </div>
+            <button type="submit">Filter</button>
+        </form>
+
+        {% for order in service_orders %}
+            <div class="service-order">
+                <h3>{{ order.category }} - {{ order.subcategory }}</h3>
+                <p>Status: {{ order.status }}</p>
+                <p>Alamat: {{ order.alamat }}</p>
+                <p>Tanggal: {{ order.tanggal }}</p>
+                <p>Waktu: {{ order.waktu }}</p>
+                <p>Harga: {{ order.harga }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <button type="submit">Ambil Pesanan</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

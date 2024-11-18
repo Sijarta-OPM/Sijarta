@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+<html>
+<head>
+    <title>MyPay Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .header .phone {
+            font-size: 18px;
+        }
+        .header .balance {
+            font-size: 24px;
+        }
+        .transactions {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .transactions h2 {
+            margin-top: 0;
+        }
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        .transaction-item .amount {
+            flex: 1;
+        }
+        .transaction-item .date {
+            flex: 1;
+            text-align: center;
+        }
+        .transaction-item .description {
+            flex: 1;
+            text-align: right;
+        }
+        .transaction-button {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .transaction-button button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="phone">{{ user.phone }}</div>
+            <div class="balance">Rp {{ balance }}</div>
+        </div>
+        <div class="transaction-button">
+            <button onclick="location.href='{% url 'mypay_transaction' %}'">Lakukan Transaksi</button> 
+            <!-- idk why this does this ;-; -->
+        </div>
+        <div class="transactions">
+            <h2>Riwayat Transaksi</h2>
+            {% for transaction in transactions %}
+                <div class="transaction-item">
+                    <div class="amount">Rp {{ transaction.amount }}</div>
+                    <div class="date">{{ transaction.date }}</div>
+                    <div class="description">{{ transaction.description }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
