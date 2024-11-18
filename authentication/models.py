@@ -11,3 +11,7 @@ class UserData(models.Model):
         choices=[('PENGGUNA', 'Pengguna'), ('PEKERJA', 'Pekerja')],
         default='PENGGUNA'
     )
+    nama_bank = models.CharField(max_length=50, blank=True, null=True)
+    nomor_rekening = models.CharField(max_length=20, blank=True, null=True)
+    npwp = models.CharField(max_length=20, blank=True, null=True)
+    link_foto = models.URLField(blank=True, null=True)

@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import UserData
 from django.contrib.auth import logout
+from datetime import date
 
 def register_view(request):
     if request.method == 'POST':
@@ -16,24 +17,69 @@ def register_view(request):
         tanggal_lahir = request.POST.get('tanggal_lahir')
         role = request.POST.get('role')
 
-        # Buat user baru
-        user = User.objects.create_user(
-            username=username,  # Gunakan username sebagai unique identifier
-            password=password,
-            first_name=nama
-        )
+        # Validasi data wajib
+        if not username or not password or not nama or not no_hp or not alamat or not tanggal_lahir:
+            messages.error(request, "Semua field wajib diisi!")
+            return render(request, 'register.html')
 
-        # Buat UserData terkait user
-        UserData.objects.create(
-            user=user,
-            no_hp=no_hp,
-            alamat=alamat,
-            tanggal_lahir=tanggal_lahir,
-            role=role
-        )
+        # Validasi username unik
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username sudah digunakan!")
+            return render(request, 'register.html')
 
-        messages.success(request, "Akun berhasil dibuat!")
-        return redirect('authentication:login')
+        # Validasi nomor HP unik
+        if UserData.objects.filter(no_hp=no_hp).exists():
+            messages.error(request, "Nomor HP sudah digunakan!")
+            return render(request, 'register.html')
+
+        # Validasi tanggal lahir
+        try:
+            if date.fromisoformat(tanggal_lahir) > date.today():
+                messages.error(request, "Tanggal lahir tidak valid!")
+                return render(request, 'register.html')
+        except ValueError:
+            messages.error(request, "Format tanggal lahir tidak valid!")
+            return render(request, 'register.html')
+
+        try:
+            # Buat user baru
+            user = User.objects.create_user(
+                username=username,
+                password=password,
+                first_name=nama
+            )
+
+            # Cek role dan simpan data
+            if role == "PEKERJA":
+                nama_bank = request.POST.get('nama_bank')
+                nomor_rekening = request.POST.get('nomor_rekening')
+                npwp = request.POST.get('npwp')
+                link_foto = request.POST.get('link_foto')
+                UserData.objects.create(
+                    user=user,
+                    no_hp=no_hp,
+                    alamat=alamat,
+                    tanggal_lahir=tanggal_lahir,
+                    role=role,
+                    nama_bank=nama_bank,
+                    nomor_rekening=nomor_rekening,
+                    npwp=npwp,
+                    link_foto=link_foto
+                )
+            else:  # Untuk PENGGUNA
+                UserData.objects.create(
+                    user=user,
+                    no_hp=no_hp,
+                    alamat=alamat,
+                    tanggal_lahir=tanggal_lahir,
+                    role=role
+                )
+
+            messages.success(request, "Akun berhasil dibuat!")
+            return redirect('authentication:login')
+        except Exception as e:
+            messages.error(request, f"Terjadi kesalahan: {e}")
+            return render(request, 'register.html')
 
     return render(request, 'register.html')
 
