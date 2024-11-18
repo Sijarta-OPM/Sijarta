@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .filter {
+            margin-bottom: 20px;
+        }
+
+        .filter label, .filter select, .filter button {
+            margin-right: 10px;
+        }
+
+        .category {
+            margin-bottom: 20px;
+        }
+
+        .category h3 {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .subcategories {
+            margin-left: 20px;
+        }
+
+        .subcategories li {
+            list-style: none;
+            margin-bottom: 5px;
+        }
+
+        .subcategories a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        .subcategories a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daftar Kategori Jasa</h1>
+
+    <!-- Filter -->
+    <div class="filter">
+        <form method="GET" action="">
+            <label for="kategori">Kategori & Subkategori:</label>
+            <select name="kategori" id="kategori">
+                <option value="">Semua Kategori</option>
+                {% for kategori in kategori_list %}
+                <optgroup label="{{ kategori.nama }}">
+                    {% for subkategori in kategori.subkategori_set.all %}
+                    <option value="{{ subkategori.id }}" {% if request.GET.kategori == subkategori.id|stringformat:"s" %}selected{% endif %}>
+                        {{ subkategori.nama }}
+                    </option>
+                    {% endfor %}
+                </optgroup>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filter</button>
+        </form>
+    </div>
+
+    <!-- Daftar Kategori dan Subkategori -->
+    {% for kategori in kategori_list %}
+    <div class="category">
+        <h3>{{ kategori.nama }}</h3>
+        <ul class="subcategories">
+            {% for subkategori in kategori.subkategori_set.all %}
+            <li>
+                <a href="{% url 'subkategori' subkategori.id %}">{{ subkategori.nama }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+</body>
+</html>
