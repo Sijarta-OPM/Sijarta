@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Status Pekerjaan Jasa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .service-order {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .service-order h3 {
+            margin: 0;
+        }
+        .service-order p {
+            margin: 5px 0;
+        }
+        .service-order button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Status Pekerjaan Jasa untuk {{ worker.name }}</h1>
+        
+        <form method="get">
+            <div class="form-group">
+                <label for="status">Filter by Status:</label>
+                <select name="status" id="status">
+                    <option value="">All</option>
+                    {% for status in statuses %}
+                        <option value="{{ status }}">{{ status }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="name">Filter by Name:</label>
+                <input type="text" name="name" id="name" value="{{ request.GET.name }}">
+            </div>
+            <button type="submit">Filter</button>
+        </form>
+
+        {% for order in service_orders %}
+            <div class="service-order">
+                <h3>{{ order.category }} - {{ order.subcategory }}</h3>
+                <p>Status: {{ order.status }}</p>
+                <p>Alamat: {{ order.alamat }}</p>
+                <p>Tanggal: {{ order.tanggal }}</p>
+                <p>Waktu: {{ order.waktu }}</p>
+                <p>Harga: {{ order.harga }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    {% if order.status == 'Menunggu Pekerja Berangkat' %}
+                        <button type="submit" name="action" value="arrived">Tiba Di Lokasi</button>
+                    {% elif order.status == 'Pekerja Tiba Di Lokasi' %}
+                        <button type="submit" name="action" value="servicing">Melakukan Pelayanan Jasa</button>
+                    {% elif order.status == 'Pelayanan Jasa Sedang Dilakukan' %}
+                        <button type="submit" name="action" value="completed">Selesai Melakukan Pelayanan</button>
+                    {% endif %}
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
