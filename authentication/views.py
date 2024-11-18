@@ -45,7 +45,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('kuning:landing')  # Redirect ke halaman utama
+            return redirect('homepage')  # Redirect ke halaman utama
         else:
             messages.error(request, "Username atau password salah!")
 

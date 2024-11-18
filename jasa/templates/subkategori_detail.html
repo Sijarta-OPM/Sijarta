@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subkategori Jasa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1, h2 {
+            margin-bottom: 10px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px;
+        }
+
+        .worker-list {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .worker-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            width: 100px;
+            border-radius: 5px;
+        }
+
+        .worker-item p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ subkategori.nama }}</h1>
+        <div class="row">
+            <span>Subkategori: {{ subkategori.nama }}</span>
+            <span>Kategori: {{ subkategori.kategori.nama }}</span>
+        </div>
+
+        <div class="description">
+            <h2>Deskripsi</h2>
+            <p>{{ subkategori.deskripsi }}</p>
+        </div>
+
+        <div class="table-container">
+            <h2>Pilihan Sesi Layanan</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sesi Layanan</th>
+                        <th>Harga</th>
+                        {% if not is_pekerja %}
+                        <th>Aksi</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sesi in sesi_list %}
+                    <tr>
+                        <td>{{ sesi.nama }}</td>
+                        <td>Rp {{ sesi.harga }}</td>
+                        {% if not is_pekerja %}
+                        <td><a href="#" class="button">Pesan</a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="worker-list">
+            <h2>Pekerja</h2>
+            {% for pekerja in pekerja_list %}
+            <div class="worker-item">
+                <p>{{ pekerja.nama }}</p>
+                {% if not is_pekerja %}
+                <a href="#" class="button">Lihat Profil</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if is_pekerja %}
+        <div>
+            <a href="#" class="button">Bergabung dengan Subkategori Ini</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
