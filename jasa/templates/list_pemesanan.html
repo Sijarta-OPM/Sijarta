@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Pemesanan Jasa</title>
+    <title>Pemesanan Jasa</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -15,16 +24,16 @@
             margin-bottom: 20px;
         }
 
-        .filters {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
         }
 
-        select, input[type="search"], button {
+        input, select, button {
+            width: 100%;
             padding: 10px;
-            font-size: 14px;
-            margin-right: 10px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
@@ -40,105 +49,37 @@
             background-color: #0056b3;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 10px;
-        }
-
-        .action-button {
-            padding: 5px 10px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .action-button:hover {
-            background-color: #218838;
-        }
-
-        .action-button.cancel {
-            background-color: #dc3545;
-        }
-
-        .action-button.cancel:hover {
-            background-color: #c82333;
-        }
-
-        .no-data {
-            text-align: center;
-            font-size: 16px;
-            color: #666;
-            margin-top: 20px;
+        .readonly {
+            background-color: #f9f9f9;
+            color: #333;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <h1>Daftar Pemesanan Jasa</h1>
-    <div class="filters">
-        <select name="subkategori" id="subkategori">
-            <option value="">Semua Subkategori</option>
-            {% for subkategori in subkategori_list %}
-            <option value="{{ subkategori.id }}">{{ subkategori.nama }}</option>
-            {% endfor %}
-        </select>
+    <div class="container">
+        <h1>Pesan Jasa</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="tanggal_pemesanan">Tanggal Pemesanan:</label>
+            <input type="date" id="tanggal_pemesanan" name="tanggal_pemesanan" required>
 
-        <select name="status" id="status">
-            <option value="">Semua Status</option>
-            <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
-            <option value="Mencari Pekerja Terdekat">Mencari Pekerja Terdekat</option>
-            <option value="Pesanan Selesai">Pesanan Selesai</option>
-        </select>
+            <label for="kode_diskon">Diskon:</label>
+            <input type="text" id="kode_diskon" name="kode_diskon" placeholder="Kode Diskon">
 
-        <input type="search" name="search" placeholder="Cari..." />
+            <label for="total_pembayaran">Total Pembayaran:</label>
+            <input type="text" id="total_pembayaran" name="total_pembayaran" class="readonly" value="Rp {{ total_pembayaran }}" readonly>
 
-        <button type="button">Search</button>
+            <label for="metode_pembayaran">Metode Pembayaran:</label>
+            <select id="metode_pembayaran" name="metode_pembayaran" required>
+                <option value="transfer">Transfer Bank</option>
+                <option value="ovo">OVO</option>
+                <option value="gopay">GoPay</option>
+                <option value="dana">Dana</option>
+            </select>
+
+            <button type="submit">Pesan Jasa</button>
+        </form>
     </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Subkategori Jasa</th>
-                <th>Sesi Layanan</th>
-                <th>Harga</th>
-                <th>Nama Pekerja</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if pemesanan_list %}
-            {% for pemesanan in pemesanan_list %}
-            <tr>
-                <td>{{ pemesanan.sesi.subkategori.nama }}</td>
-                <td>{{ pemesanan.sesi.nama }}</td>
-                <td>Rp {{ pemesanan.total_pembayaran }}</td>
-                <td>{{ pemesanan.pekerja.nama if pemesanan.pekerja else '-' }}</td>
-                <td>{{ pemesanan.status }}</td>
-                <td>
-                    {% if pemesanan.status == "Menunggu Pembayaran" or pemesanan.status == "Mencari Pekerja Terdekat" %}
-                    <a href="#" class="action-button cancel">Batalkan</a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="6" class="no-data">Tidak ada data pemesanan tersedia.</td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
 </body>
 </html>

@@ -67,6 +67,21 @@
         .subcategories a:hover {
             text-decoration: underline;
         }
+
+        .button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -94,6 +109,9 @@
             <button type="submit">Search</button>
         </form>
     </div>
+
+    <!-- Tombol untuk melihat Daftar Pemesanan -->
+    <a href="{% url 'list_pemesanan' %}" class="button">Lihat Daftar Pemesanan</a>
 
     <!-- Daftar Kategori dan Subkategori -->
     {% for kategori in kategori_list %}
