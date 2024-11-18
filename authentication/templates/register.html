@@ -1,43 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
-<body>
-    <h2>Daftar Akun Baru</h2>
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+    <h2>Register</h2>
     
-    <!-- Form registrasi -->
     <form method="POST">
         {% csrf_token %}
-        <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
 
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-
-        <label for="nama">Nama:</label>
-        <input type="text" name="nama" required><br>
-
-        <label for="no_hp">No HP:</label>
-        <input type="text" name="no_hp" required><br>
-
-        <label for="alamat">Alamat:</label>
-        <textarea name="alamat" required></textarea><br>
-
-        <label for="tanggal_lahir">Tanggal Lahir:</label>
-        <input type="date" name="tanggal_lahir" required><br>
-
+        <!-- Pilihan Role -->
         <label for="role">Role:</label>
-        <select name="role" required>
+        <select name="role" id="role" onchange="toggleFormFields()" required>
             <option value="PENGGUNA">Pengguna</option>
             <option value="PEKERJA">Pekerja</option>
-        </select><br>
+        </select><br><br>
 
-        <button type="submit">Daftar</button>
+        <!-- Form untuk Pengguna -->
+        <div id="pengguna-form" style="display: block;">
+            <h3>Data Pengguna</h3>
+            <label for="username">Username:</label>
+            <input type="text" name="username" required><br>
+            
+            <label for="password">Password:</label>
+            <input type="password" name="password" required><br>
+            
+            <label for="nama">Nama:</label>
+            <input type="text" name="nama" required><br>
+            
+            <label for="no_hp">No HP:</label>
+            <input type="text" name="no_hp" required><br>
+            
+            <label for="alamat">Alamat:</label>
+            <textarea name="alamat" required></textarea><br>
+            
+            <label for="tanggal_lahir">Tanggal Lahir:</label>
+            <input type="date" name="tanggal_lahir" required><br>
+        </div>
+
+        <!-- Form untuk Pekerja -->
+        <div id="pekerja-form" style="display: none;">
+            <h3>Data Pekerja</h3>
+            <label for="username">Username:</label>
+            <input type="text" name="username" required><br>
+            
+            <label for="password">Password:</label>
+            <input type="password" name="password" required><br>
+            
+            <label for="nama">Nama:</label>
+            <input type="text" name="nama" required><br>
+            
+            <label for="no_hp">No HP:</label>
+            <input type="text" name="no_hp" required><br>
+            
+            <label for="alamat">Alamat:</label>
+            <textarea name="alamat" required></textarea><br>
+            
+            <label for="tanggal_lahir">Tanggal Lahir:</label>
+            <input type="date" name="tanggal_lahir" required><br>
+            
+            <!-- Data Tambahan untuk Pekerja -->
+            <label for="nama_bank">Nama Bank:</label>
+            <input type="text" name="nama_bank"><br>
+            
+            <label for="nomor_rekening">Nomor Rekening:</label>
+            <input type="text" name="nomor_rekening"><br>
+            
+            <label for="npwp">NPWP:</label>
+            <input type="text" name="npwp"><br>
+            
+            <label for="link_foto">Link Foto:</label>
+            <input type="text" name="link_foto"><br>
+        </div>
+
+        <button type="submit">Register</button>
     </form>
 
     <p>Sudah punya akun? <a href="{% url 'authentication:login' %}">Login di sini</a></p>
-</body>
-</html>
+
+    <script>
+        // JavaScript untuk mengatur tampilan form berdasarkan role yang dipilih
+        function toggleFormFields() {
+            var role = document.getElementById("role").value;
+            if (role === "PENGGUNA") {
+                document.getElementById("pengguna-form").style.display = "block";
+                document.getElementById("pekerja-form").style.display = "none";
+            } else if (role === "PEKERJA") {
+                document.getElementById("pengguna-form").style.display = "none";
+                document.getElementById("pekerja-form").style.display = "block";
+            }
+        }
+    </script>
+{% endblock %}

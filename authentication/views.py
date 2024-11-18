@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import UserData
+from django.contrib.auth import logout
 
 def register_view(request):
     if request.method == 'POST':
@@ -50,3 +51,7 @@ def login_view(request):
             messages.error(request, "Username atau password salah!")
 
     return render(request, 'login.html')
+
+def logout_view(request):
+    logout(request)  # Menghapus sesi pengguna
+    return redirect('authentication:login')
